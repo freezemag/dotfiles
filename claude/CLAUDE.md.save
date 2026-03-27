@@ -1,0 +1,191 @@
+
+# Create a setup script for new machines
+cat > setup.sh << 'EOF'
+#!/bin/bash
+mkdir -p ~/.claude
+ln -sf ~/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
+echo "Done. ~/.claude/CLAUDE.md now points to ~/dotfiles/claude/CLAUDE.md"
+
+# Optional: if you have a settings.json for universal MCPs
+if [ -f ~/dotfiles/claude/settings.json ]; then
+  ln -sf ~/dotfiles/claude/settings.json ~/.claude/settings.json
+  echo "settings.json linked too."
+fi
+EOF
+chmod +x setu# CLAUDE.md — Universal (Cem A.)
+## Applies to all projects via ~/.claude/CLAUDE.md
+
+---
+
+## Who You Are Working With
+
+Cem A. is an artist, writer, and organiser based in Berlin. He is not a software engineer. He is learning to code by building real projects. Every instruction must reflect this:
+
+- Spell out every step: which file, what to type, in what order.
+- Explain deployment steps as if writing for a first-time user. "Deploy the worker" is not enough. Say exactly where to go and what to click.
+- Avoid jargon without context. If you must use a technical term (merge, PR, build, rebase), explain it the first time.
+- Flag when order matters. If step 2 breaks things without step 1, say so and explain why.
+- Provide the full content to paste when asking to update code via a dashboard or editor. Never say "paste the updated file" without including the file.
+- Prefer targeted edits over wholesale rewrites. Cem works iteratively. Show what changed and why.
+
+---
+
+## Session Start Checklist (MANDATORY)
+
+Run this before making any changes in any project. Adapt the specifics to the project, but never skip the pattern.
+
+1. **Clean working tree.** Run `git status`. If dirty, investigate before proceeding. May be leftover from an interrupted session.
+
+2. **Build health.** Run the project's build command. Fix errors before making new changes.
+
+3. **Review recent history.** Run `git log --oneline -15`. Read what happened since the last session. Look for:
+   - `fix:` commits that suggest recurring bugs or missing tests
+   - Features added without corresponding documentation updates
+   - Patterns of repeated mistakes that should become rules
+
+4. **Documentation drift.** Compare recent git changes against the project's CLAUDE.md, README, and any methodology docs. If code changed but docs did not, update docs first.
+
+5. **Version check.** Compare unreleased commits against the version in `package.json` (or equivalent). If there are unreleased changes, bump the version and update the changelog before starting new work. Follow semver: breaking changes bump minor (0.x), features bump minor, fixes bump patch.
+
+6. **Test health.** Run the project's test suite. If tests fail, fix them before starting new work. If recent features lack tests, add them before building new things.
+
+7. **Dead code scan.** Quick search for unused imports, orphaned translation keys, unreferenced files. Remove anything confirmed dead.
+
+8. **Checklist self-review.** If any step above references removed features, wrong file paths, or superseded tools, update the checklist itself. The checklist must describe the project as it is now.
+
+---
+
+## Session End Checklist (MANDATORY)
+
+Before stopping work in any project:
+
+1. Run the build. Verify it passes.
+2. Run the test suite. Note any failures.
+3. Review `git log --oneline -10`. Verify the commit history reads coherently.
+4. Check if CLAUDE.md needs updates based on this session's work.
+5. If tests are failing, leave a comment at the top of the failing test describing what needs to be fixed, so the next session picks up immediately.
+6. If a task is unfinished, leave a `TODO(next-session):` comment in the relevant file or at the top of CLAUDE.md explaining exactly where things stand.
+
+---
+
+## Working in Chunks (MANDATORY)
+
+Never edit an entire file in a single operation. Large files cause context overflow and session freezes.
+
+- **Maximum edit scope:** ~80 lines per edit. If a change needs more, break it into sequential edits.
+- **Commit after each logical change.** Do not accumulate unrelated changes.
+- **New files under 150 lines:** create in one go. Over 150 lines: skeleton first, then content in subsequent edits.
+- **Large files (500+ lines):** Always use targeted, surgical edits via find-and-replace on specific blocks. Never rewrite the whole file.
+- **Multi-file changes:** Edit and commit one file at a time. Never have uncommitted changes in more than one file.
+
+Chunking strategy for common tasks:
+- Adding a feature: (1) logic/state, commit. (2) UI, commit. (3) tests, commit.
+- Refactoring: (1) extract to new file, commit. (2) update imports, commit. (3) modify extracted code, commit.
+- Translations/localisations: 3-4 files per batch, commit, continue.
+
+---
+
+## Continuous Documentation and Testing
+
+After every feature or fix, before moving to the next task:
+
+**Documentation:**
+- Does CLAUDE.md still accurately describe the project? Check: file structure, components, API config, feature list, architecture.
+- Does README still describe the project for external readers?
+- Does any methodology doc still match the actual methods?
+- If the project has an in-app guide or help page, does it reflect the current UI?
+
+**Tests:**
+- Do existing tests still pass?
+- Do test assertions match the current UI? If you renamed a button or moved a component, update the corresponding assertions.
+- Should new tests be added for the feature you just built?
+
+**Git hygiene:**
+- Descriptive commit messages: `feat: add French UI translation` not `update files`
+- One logical change per commit
+- If a previous commit had an error, fix it in a new commit: `fix: correct French translation for analyse button`
+
+---
+
+## Bug Discovery Protocol
+
+When a bug is found, before closing it:
+
+1. Fix the bug.
+2. Add a regression test for the specific scenario.
+3. Ask: could this class of bug recur? If yes, add a test for the general pattern.
+4. Ask: does this suggest a missing rule in CLAUDE.md? If yes, add it. Bugs that recur indicate a process gap, not just a code gap.
+5. Commit the fix, test, and any CLAUDE.md updates together.
+
+---
+
+## MCP-First Philosophy
+
+MCP tools are the primary way to interact with external services. Do not fall back to manual CLI commands, Python scripts, or curl when an MCP is available.
+
+- If an MCP tool fails, troubleshoot it rather than silently switching approaches.
+- Project MCPs are defined in `.mcp.json` at the repo root. They load automatically.
+- If a tool is not found, the MCP server may have failed to start. Check logs and fix the issue.
+- Ask the user for help resolving MCP errors rather than silently giving up.
+
+---
+
+## Anti-Patterns
+
+### Do not go in circles
+If an approach has failed, do not retry it. Before taking action, check whether the same approach was already tried in this session. Instead: add diagnostic logging, commit, deploy, ask the user to check.
+
+### Ask the user instead of guessing
+When blocked by environment restrictions, ask directly:
+- "Can you open DevTools Console on the live site and tell me what the error says?"
+- "Can you paste the full error message?"
+Do not spend more than one attempt working around environment restrictions. If the first attempt fails, ask.
+
+### Do not over-engineer
+Cem's projects are single-person, touring-friendly tools. Prefer simplicity. No state management libraries unless truly needed. No build complexity unless truly needed. Every dependency is a liability on tour.
+
+### Screenshots are necessary but not sufficient
+After taking screenshots, critically evaluate what you see. Write down what you checked and what looked wrong before proceeding. If something looks "a bit off," it is off. Investigate.
+
+---
+
+## Visual Verification Principles
+
+After editing any visual file:
+
+1. Take screenshots at relevant viewports (mobile ~390px, desktop ~1024px).
+2. Check: text hierarchy, button rounding, border consistency, no overlapping elements, interactive elements visually distinct from body text, responsive layout correct.
+3. Click every link and verify the URL. Open every modal and verify it dismisses. These bugs are invisible in static screenshots.
+4. If the project has dark mode or stage projection views, screenshot those too.
+
+---
+
+## Style Defaults (Unless Project Overrides)
+
+- British spellings in all user-facing text (analyse, colour, behaviour, etc.)
+- No exclamation marks
+- No emoji in UI
+- No marketing language
+- Precise, unadorned, confident register
+
+---
+
+## Cross-Device Sync
+
+This file lives at `~/.claude/CLAUDE.md` and is symlinked from `~/dotfiles/claude/CLAUDE.md` (or equivalent). The dotfiles repo is the single source of truth. Per-project CLAUDE.md files live in their git repos and sync naturally via git.
+
+To set up a new machine:
+```bash
+git clone git@github.com:freezemag/dotfiles.git ~/dotfiles
+mkdir -p ~/.claude
+ln -sf ~/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
+ln -sf ~/dotfiles/claude/settings.json ~/.claude/settings.json
+```
+
+---
+
+*Universal context for Claude Code. All projects inherit these rules.*
+*Per-project CLAUDE.md files add project-specific details and may override specific sections.*
+# Commit
+git add -A
+git commit -m "init: universal claude code config
