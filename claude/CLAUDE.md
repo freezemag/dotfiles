@@ -1,6 +1,8 @@
 # CLAUDE.md — Universal (Cem A.)
 ## Applies to all projects via ~/.claude/CLAUDE.md
 
+> Terminal sessions only. Cloud sessions never read this file; they get the same rules from the `freezemag-base` plugin in this repository (see README.md). Keep the two in step, or shorten this one to a pointer.
+
 ---
 
 ## Who You Are Working With

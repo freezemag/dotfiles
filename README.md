@@ -1,0 +1,60 @@
+# dotfiles
+
+Cem A.'s Claude Code kit. This repository is a plugin marketplace with one plugin, `freezemag-base`, enabled from every freezemag repo. It replaces the old `~/.claude/CLAUDE.md` symlink, which cloud sessions never read.
+
+## What the plugin does
+
+- **Rules in every session.** A SessionStart hook prints the universal rules (reply length, who you are working with, style, model delegation, no PR watching) into the session's context. `plugins/freezemag-base/scripts/session-context.sh` is the text; edit it there.
+- **Guards.** Before an edit, `block` rules in the repo's `.claude/freezemag-guards.txt` stop it. After an edit, `warn` rules and any `.html`/`.css` edit add a reminder. Before any `git push`, the repo's `npm test` runs and a failure blocks the push.
+- **Skills.** `/freezemag-base:session-start`, `/freezemag-base:session-end`, `/freezemag-base:adversarial-review`, `/freezemag-base:visual-matrix`.
+- **Agents on cheap models.** `surveyor` and `test-runner` (Haiku), `screenshot-auditor` and `drift-checker` (Sonnet), `reviewer` (Opus).
+
+## Wire a repo (three files)
+
+1. `.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "freezemag": { "source": { "source": "github", "repo": "freezemag/dotfiles" } }
+  },
+  "enabledPlugins": {
+    "freezemag-base@freezemag": true
+  },
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.sh" } ] }
+    ]
+  }
+}
+```
+
+2. `.claude/hooks/session-start.sh` (executable), which in a cloud session installs the plugin if it is not already there. Cloud sessions do not auto-install plugins from a GitHub marketplace declared in project settings; the install step is required. Copy the one from `freezemag/atlas`.
+
+3. `.claude/freezemag-guards.txt`, one rule per line:
+
+```
+# block <glob> <message>   stops the edit
+# warn  <glob> <message>   reminds after the edit
+block vendor/** Vendored files are pinned. Re-vendor them, do not edit in place.
+warn  round-map.js Run node tests/shot-matrix.js and look at every image before you stop.
+```
+
+## Make every cloud session start with the plugin already installed
+
+In claude.ai, open the cloud environment settings and add to the setup script:
+
+```
+claude plugin marketplace add freezemag/dotfiles
+claude plugin install freezemag-base@freezemag
+```
+
+The setup script runs before Claude Code launches and its result is cached, so the per-repo hook above becomes a fallback.
+
+## Local machine
+
+```
+git clone git@github.com:freezemag/dotfiles.git ~/dotfiles && ~/dotfiles/setup.sh
+```
+
+`claude/CLAUDE.md` is kept for terminal sessions; the plugin is the source of truth for cloud sessions.
