@@ -44,6 +44,18 @@ notes = []
 for kind, glob, msg in rules:
     if kind == "warn" and matches(glob):
         notes.append(msg or f"{glob}: check before you stop.")
+# CLAUDE.md has a ceiling. Every session pays for every line of it, and the
+# docs put the adherence cliff around 200 lines; 400 is the studio's limit.
+# Past it, the fix is a move, not a trim: decisions to docs/DECISIONS.md,
+# history to docs/, area rules to .claude/rules/ with a paths: header.
+if os.path.basename(rel) == "CLAUDE.md":
+    try:
+        with open(path, encoding="utf-8") as fh:
+            n = sum(1 for _ in fh)
+    except OSError:
+        n = 0
+    if n > 400:
+        notes.append(f"CLAUDE.md is {n} lines; the limit is 400. Move what grew: decisions to docs/DECISIONS.md, history to docs/, area-specific rules to .claude/rules/ with a paths: header. Never delete; move.")
 if rel.endswith((".html", ".css")) and not any("screenshot" in n.lower() for n in notes):
     notes.append("Visual file edited. Screenshot the affected surface at 1920x1080 and 390x844 and say what you checked before you stop.")
 if notes:
