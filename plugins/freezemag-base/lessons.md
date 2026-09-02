@@ -7,3 +7,4 @@ can go.
 - 2026-09-02 A rule stated in prose recurs; a rule in a hook or a guard line does not. When a correction can be a guard, make it one.
 - 2026-09-02 Cloud sessions never read ~/.claude. Anything meant for every session goes in this plugin, not in a home-directory file.
 - 2026-09-02 Ad-hoc screenshots of the state just changed miss the defects. Sweep every mode, ground and viewport, and the exported files re-opened.
+- 2026-09-02 CLAUDE.md grows because every rule said add to it and nothing said remove. The plugin now warns past 400 lines; decisions, history and area rules live in docs/ and .claude/rules/, and lessons in lessons files.
