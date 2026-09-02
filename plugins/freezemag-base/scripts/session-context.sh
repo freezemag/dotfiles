@@ -22,4 +22,7 @@ WORK. Small edits; one logical change per commit. A screenshot is an object of c
 
 SKILLS. /freezemag-base:session-start, /freezemag-base:session-end, /freezemag-base:adversarial-review, /freezemag-base:visual-matrix. Per-repo guard rules live in .claude/freezemag-guards.txt.
 RULES
+# Universal lessons, maintained by /freezemag-base:learn and :retro.
+L="$(dirname "$0")/../lessons.md"
+[ -f "$L" ] && { echo; cat "$L"; }
 exit 0

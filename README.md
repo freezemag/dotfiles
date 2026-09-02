@@ -9,6 +9,14 @@ Cem A.'s Claude Code kit. This repository is a plugin marketplace with one plugi
 - **Skills.** `/freezemag-base:session-start`, `/freezemag-base:session-end`, `/freezemag-base:adversarial-review`, `/freezemag-base:visual-matrix`.
 - **Agents on cheap models.** `surveyor` and `test-runner` (Haiku), `screenshot-auditor` and `drift-checker` (Sonnet), `reviewer` (Opus).
 
+## Learning from corrections
+
+Lessons persist only in git. Three parts keep them flowing:
+
+- A UserPromptSubmit hook spots a correction in Cem's message ("i told you", "still not", "again", "why is this") and reminds the session to run `/freezemag-base:learn` after the fix. Plain grep, no model call.
+- `/freezemag-base:learn` writes one lesson where it sticks: a guard line in the repo's `.claude/freezemag-guards.txt` (enforced), a dated line in the repo's `.claude/rules/lessons.md` (loaded every session in that repo), or a line in `plugins/freezemag-base/lessons.md` here (printed into every session everywhere), via a draft PR.
+- `/freezemag-base:retro`, run monthly by Cem, finds lessons that recurred across repos and proposes promoting them here, and universal lessons that can retire.
+
 ## Wire a repo (three files)
 
 1. `.claude/settings.json`:
