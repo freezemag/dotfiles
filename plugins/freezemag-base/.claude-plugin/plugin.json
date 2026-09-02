@@ -1,0 +1,10 @@
+{
+  "name": "freezemag-base",
+  "displayName": "freezemag base",
+  "version": "0.1.0",
+  "description": "Universal rules, skills, guard hooks and cheap-model agents for all freezemag projects. Replaces the ~/.claude/CLAUDE.md that cloud sessions never see.",
+  "author": { "name": "Cem A.", "url": "https://github.com/freezemag" },
+  "repository": "https://github.com/freezemag/dotfiles",
+  "license": "MIT",
+  "keywords": ["freezemag", "rules", "hooks", "agents"]
+}

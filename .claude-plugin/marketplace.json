@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "freezemag",
+  "description": "Cem A.'s personal Claude Code kit. One plugin, enabled from every freezemag repo.",
+  "owner": { "name": "Cem A." },
+  "plugins": [
+    {
+      "name": "freezemag-base",
+      "source": "./plugins/freezemag-base",
+      "description": "Universal rules, skills, guard hooks and cheap-model agents for all freezemag projects.",
+      "version": "0.1.0"
+    }
+  ]
+}
