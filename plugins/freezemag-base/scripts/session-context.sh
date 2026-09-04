@@ -16,7 +16,7 @@ STYLE IN UI AND DOCS. British spelling. No exclamation marks. No emoji. No marke
 
 MODELS. The main conversation is for judgment. Delegate file sweeps, greps, catalogue reads and test runs to the freezemag-base surveyor or test-runner agents (haiku); screenshot audits and doc-drift checks to screenshot-auditor and drift-checker (sonnet); adversarial review to reviewer (opus). Give the built-in Explore agent model haiku explicitly.
 
-PULL REQUESTS. Open the PR as a draft and stop. Do not subscribe to PR activity, do not schedule check-ins or send_later reminders, do not create routines. Cem merges his own PRs.
+PULL REQUESTS. Open the PR as a draft and stop. Do not subscribe to PR activity, do not schedule check-ins or send_later reminders, do not create routines. Cem merges his own PRs. Before every push, read the PR's STATE (open, merged, closed), not only its checks: a merged PR is finished, and a push to its branch is a push to nothing. Anything after the merge restarts from the default branch on the same branch name and gets a new draft PR; the prepush-merged guard blocks the common case, the rule covers the rest.
 
 WORK. Small edits; one logical change per commit. A screenshot is an object of critique: say what you checked and what looked wrong. When a bug is found: fix it, add a regression test, ask whether a rule is missing, commit the three together. Do not scaffold for v2. Every dependency is a liability on tour.
 
