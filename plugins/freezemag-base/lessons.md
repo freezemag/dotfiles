@@ -9,3 +9,4 @@ can go.
 - 2026-09-02 Ad-hoc screenshots of the state just changed miss the defects. Sweep every mode, ground and viewport, and the exported files re-opened.
 - 2026-09-02 CLAUDE.md grows because every rule said add to it and nothing said remove. The plugin now warns past 400 lines; decisions, history and area rules live in docs/ and .claude/rules/, and lessons in lessons files.
 - 2026-09-04 A PR's checks say nothing about its state. Cem merged atlas #74 eighteen minutes after it opened; eight commits went to the same branch over four hours and were in no PR. Read the PR's state before every push; a merged PR is finished.
+- 2026-09-05 Told Cem no BWT integration existed, then a Git pull add-on and an ESPHome preset would work, all from memory, and was wrong twice and corrected once. Never argue from memory and never assume what code does: read the vendor page, the integration source or the repo before stating what exists or how it behaves, and say what was read.
