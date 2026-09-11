@@ -69,7 +69,7 @@
         ]
       },
       {
-        "matcher": "mcp__github__create_pull_request|mcp__github__subscribe_pr_activity",
+        "matcher": "mcp__.*__(create_pull_request|subscribe_pr_activity)",
         "hooks": [
           {
             "type": "command",
