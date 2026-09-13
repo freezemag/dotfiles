@@ -59,6 +59,12 @@ claude plugin install freezemag-base@freezemag
 
 The setup script runs before Claude Code launches and its result is cached, so the per-repo hook above becomes a fallback.
 
+## Getting a change to the plugin into sessions
+
+Two steps, and the first is easy to forget. The marketplace entry carries a `version`, and the plugin documentation says users "only receive updates when you bump this field", so a merged change that keeps the old number reaches nobody. Bump it in both `plugins/freezemag-base/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
+
+Then the cache. A running session keeps the copy it installed, and so does any cloud environment whose setup cache is warm. After merging, rebuild the environment setup cache in the claude.ai environment settings, start a new session, and read the version back with `claude plugin list` before believing the fix is live.
+
 ## Local machine
 
 ```
