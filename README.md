@@ -7,7 +7,7 @@ Cem A.'s Claude Code kit. This repository is a plugin marketplace with one plugi
 - **Rules in every session.** A SessionStart hook prints the universal rules (reply length, who you are working with, style, model delegation, no PR watching) into the session's context. `plugins/freezemag-base/scripts/session-context.sh` is the text; edit it there.
 - **Guards.** Before an edit, `block` rules in the repo's `.claude/freezemag-guards.txt` stop it. After an edit, `warn` rules and any `.html`/`.css` edit add a reminder. Before any `git push`, the repo's `npm test` runs and a failure blocks the push.
 - **Skills.** `/freezemag-base:session-start`, `/freezemag-base:session-end`, `/freezemag-base:adversarial-review`, `/freezemag-base:visual-matrix`.
-- **Agents on cheap models.** `surveyor` and `test-runner` (Haiku), `screenshot-auditor` and `drift-checker` (Sonnet), `reviewer` (Opus).
+- **Agents on cheap models.** `surveyor` and `test-runner` (Haiku), `screenshot-auditor` and `drift-checker` (Sonnet), `reviewer` and `code-simplifier` (Opus). `code-simplifier` is Anthropic's official plugin agent adapted to no-build repos: on request, it simplifies the session's diff without changing behaviour, and never touches ported or vendored files.
 
 ## Learning from corrections
 
