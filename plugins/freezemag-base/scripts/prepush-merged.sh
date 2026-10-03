@@ -16,13 +16,21 @@
 # here; the rule in session-context.sh (read the PR's state before every
 # push) covers those.
 #
-# Skipped, silently, when the push is not this project's (the command
-# changes directory or uses `git -C`), when there is no origin, when the
-# branch is the default branch or has never been pushed, or when the fetch
-# fails (a guard that blocks on a network error would block every push on
-# a bad connection). Set FREEZEMAG_SKIP_PREPUSH=1 to bypass once.
+# A branch that has already been restarted (its local history no longer
+# contains the merged tip) is let through: that push IS the prescribed fix,
+# and refusing it left the session stuck twice (dual-trace, 2026-10-03).
+# Continuing on top of the merged history is still blocked.
+#
+# Skipped, silently, when the command is not a push at all (the hook's
+# matcher is best-effort and also fires on $(), backticks and variables),
+# when the push is not this project's (the command changes directory or
+# uses `git -C`), when there is no origin, when the branch is the default
+# branch or has never been pushed, or when the fetch fails (a guard that
+# blocks on a network error would block every push on a bad connection).
+# Set FREEZEMAG_SKIP_PREPUSH=1 to bypass once.
 [ "${FREEZEMAG_SKIP_PREPUSH:-}" = "1" ] && exit 0
 CMD="$(python3 -c 'import json,sys; print((json.load(sys.stdin).get("tool_input") or {}).get("command",""))' 2>/dev/null || cat)"
+case "$CMD" in *push*) ;; *) exit 0;; esac
 case "$CMD" in *"cd "*|*"git -C"*|*"--git-dir"*) exit 0;; esac
 ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
 cd "$ROOT" || exit 0
@@ -51,6 +59,9 @@ git merge-base --is-ancestor "$TIP" "origin/$DEF" 2>/dev/null || exit 0
 # at a commit that IS the default branch's history (branched and pushed
 # empty), not a merged side line.
 if git rev-list --first-parent "origin/$DEF" 2>/dev/null | grep -qx "$TIP"; then exit 0; fi
+# Already restarted: the local history does not contain the merged tip, so
+# this push replaces it with new history. That is the fix, not the bug.
+git merge-base --is-ancestor "$TIP" HEAD 2>/dev/null || exit 0
 {
   echo "freezemag guard: push blocked. The pushed tip of '$BR' ($(git rev-parse --short "$TIP")) is already in '$DEF': its pull request was merged, so anything pushed now lands on a branch no PR covers."
   echo "Restart the branch on the same name: git fetch origin $DEF && git rebase --onto origin/$DEF origin/$BR && git push --force-with-lease -u origin $BR, then open a NEW draft PR. Set FREEZEMAG_SKIP_PREPUSH=1 for a deliberate skip."
